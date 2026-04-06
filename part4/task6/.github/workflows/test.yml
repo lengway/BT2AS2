@@ -1,0 +1,59 @@
+name: Smart Contracts CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test-contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
+
+      - name: Show Foundry version
+        run: forge --version
+
+      - name: Build Part1 Task1
+        working-directory: part1/task1
+        run: forge build
+
+      - name: Test Part1 Task1
+        working-directory: part1/task1
+        run: forge test -vv
+
+      - name: Coverage Part1 Task1
+        working-directory: part1/task1
+        run: forge coverage
+
+      - name: Build Part2 Task3
+        working-directory: part2/task3
+        run: forge build
+
+      - name: Test + Gas Report Part2 Task3
+        working-directory: part2/task3
+        run: forge test --gas-report
+
+      - name: Build Part3 Task5
+        working-directory: part3/task5
+        run: forge build
+
+      - name: Test + Gas Report Part3 Task5
+        working-directory: part3/task5
+        run: forge test --gas-report
+
+      - name: Install Slither
+        run: pip3 install slither-analyzer
+
+      - name: Slither analysis (Part2 Task3)
+        working-directory: part2/task3
+        run: slither . --print human-summary
+
+      - name: Slither analysis (Part3 Task5)
+        working-directory: part3/task5
+        run: slither . --print human-summary
