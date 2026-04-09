@@ -22,7 +22,7 @@ jobs:
       - name: Install Foundry dependencies
         run: |
           for dir in part1/task1 part2/task3 part3/task5; do
-            forge install foundry-rs/forge-std --no-commit --root "$dir"
+            (cd "$dir" && forge install foundry-rs/forge-std --no-git)
           done
 
       - name: Build Part1 Task1
