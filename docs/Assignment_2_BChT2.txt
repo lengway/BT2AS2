@@ -1,0 +1,112 @@
+Assignment 2
+ DeFi Protocol Development (AMM / DEX)
+This assignment covers Weeks 3–5 of the Blockchain Technologies 2 course. You will build a functional
+Automated Market Maker (AMM) from scratch, implement professional testing with Foundry, and develop
+a lending protocol simulation.
+PART 1 — Advanced Testing with Foundry
+Task 1: Foundry Project Setup & Fuzz Testing
+Requirements:
+ Initialize a Foundry project with proper directory structure
+ Create a simple ERC-20 token contract
+ Write standard unit tests (at least 10 test cases) covering: mint, transfer, approve, transferFrom,
+edge cases
+ Write fuzz tests for the transfer function (Foundry will auto-generate random inputs)
+ Write at least 2 invariant tests (e.g., total supply never changes after transfers, no address can
+have more than total supply)
+ Configure and run forge coverage to measure test coverage
+Deliverables:
+ Full Foundry project (src/, test/, script/ directories)
+ Test output showing all passing tests, fuzz runs, and invariant tests
+ Coverage report screenshot
+ Brief explanation (0.5–1 page): fuzz testing vs unit testing — when to use each
+Task 2: Fork Testing Against Mainnet
+Use Foundry’s fork testing to interact with deployed mainnet contracts.
+Requirements:
+ Fork Ethereum mainnet (or a testnet with real protocol deployments)
+ Write a test that reads the USDC total supply from the real USDC contract
+ Write a test that simulates a Uniswap V2 swap using the real router contract
+ Explain how vm.createSelectFork and vm.rollFork work
+Deliverables:
+ Fork test scripts
+ Test output screenshots
+ Explanation (0.5 page): benefits and limitations of fork testing
+PART 2 — AMM (Automated Market Maker) Development
+
+
+Task 3: Build a Constant Product AMM
+Implement a fully functional AMM smart contract based on the constant product formula x * y = k.
+Smart Contract Requirements:
+ Accept two ERC-20 tokens as a trading pair
+ addLiquidity(): users deposit both tokens proportionally, receive LP tokens
+ removeLiquidity(): burn LP tokens, receive back proportional amounts of both tokens
+ swap(): swap one token for another with 0.3% fee
+ Implement getAmountOut() using the constant product formula
+ Emit events for all operations: LiquidityAdded, LiquidityRemoved, Swap
+ Implement slippage protection (minimum output amount parameter)
+Testing Requirements (at least 15 test cases):
+ Add liquidity (first provider and subsequent providers)
+ Remove liquidity (partial and full)
+ Swap both directions (tokenA → tokenB and tokenB → tokenA)
+ Verify k remains constant (or increases due to fees) after swaps
+ Slippage protection: test that swaps revert when output is below minimum
+ Edge cases: zero amounts, single-sided liquidity, large swaps causing high price impact
+ Fuzz test the swap function
+Deliverables:
+ AMM.sol, LPToken.sol, two ERC-20 token contracts
+ Complete test suite with all tests passing
+ Gas report for all AMM operations
+Task 4: AMM Mathematical Analysis
+Write a technical document (2–3 pages) analyzing:
+ Derivation of the constant product formula and why it works
+ How the 0.3% fee affects the invariant k over time
+ Impermanent loss: derive the formula, calculate IL for a 2x price change
+ Price impact as a function of trade size relative to pool reserves
+ Compare your AMM to Uniswap V2 — what features are missing?
+
+
+PART 3 — Lending Protocol Simulation
+Task 5: Build a Basic Lending Pool
+Implement a simplified lending/borrowing protocol.
+Smart Contract Requirements:
+ deposit(): users deposit ERC-20 tokens as collateral
+ borrow(): users borrow against their collateral (max 75% LTV — Loan-to-Value ratio)
+ repay(): users repay borrowed amount
+ withdraw(): users withdraw collateral (only if health factor > 1)
+ liquidate(): anyone can liquidate undercollateralized positions
+ Track user positions: deposited, borrowed, health factor
+ Implement a simple linear interest rate model
+Testing Requirements (at least 10 test cases):
+ Deposit and withdrawal flow
+ Borrow within and exceeding LTV limits
+ Repayment (partial and full)
+ Liquidation scenario: simulate price drop, verify liquidation works
+ Interest accrual over time (use vm.warp in Foundry)
+ Edge cases: borrow with zero collateral, withdraw while having outstanding debt
+Deliverables:
+ LendingPool.sol with all functions
+ Complete test suite
+ Gas report
+ Workflow diagram (draw.io or similar) showing deposit → borrow → repay → withdraw flow
+PART 4 — CI/CD Pipeline
+Task 6: GitHub Actions for Smart Contracts
+Create a CI pipeline configuration for your project.
+Requirements:
+ Write a .github/workflows/test.yml file that: installs Foundry, compiles contracts, runs all tests,
+generates gas report
+ Add a Slither analysis step to the pipeline
+ Document the pipeline stages in a brief explanation (0.5 page)
+Deliverables:
+ GitHub Actions YAML file
+ Screenshot or log of a successful pipeline run (local simulation with act is acceptable)
+
+
+FINAL SUBMISSION CHECKLIST
+Submit a single ZIP containing:
+✔ Foundry project with fuzz and invariant tests
+✔ Fork testing scripts and outputs
+✔ AMM smart contracts + LP token + test suite
+✔ AMM mathematical analysis document
+✔ Lending pool contract + test suite + workflow diagram
+✔ CI/CD pipeline YAML + documentation
+✔ Gas reports for all contracts
+✔ All screenshots and test outputs
